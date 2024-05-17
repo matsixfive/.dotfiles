@@ -1,0 +1,6 @@
+alias lock="dm-tool lock"
+
+alias ls='eza --icons=auto --color-scale'
+alias la='ls -a'
+
+# dir=$(fd . ~/.config -t d --maxdepth 1 | fzf); nvim $dir -c "cd $dir"
