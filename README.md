@@ -9,15 +9,28 @@ Install stow. e.g. on arch:
 sudo pacman -S stow
 ```
 
-This repo must be in the home directory e.g. `~/.dotfiles`.
+This repo must be a direct chuild of the home directory e.g. `~/.dotfiles`.
 
 To install the dotfiles, enter the repo root (`~/.dotfiles`) and run:
 
 ```sh
 stow .
 ```
-
 It is important to run this in the root of the repo and not in a subdirectory.
+This will create soft links for all files in the `~/.dotfiles` directory to the parent `~` folowing the same structure:
+
+```
+~
+├─ .config -> ...
+│  ├ tmux -> ...
+│  └ nvim -> ...
+├─ .zshrc -> ...
+└─ .dotfiles
+   ├─ .config
+   │  ├ tmux
+   │  └ nvim
+   └─ .zshrc
+```
 
 ## Notes
 
