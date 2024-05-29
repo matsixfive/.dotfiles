@@ -4,6 +4,11 @@ The repo contains most of my linux config files and is intended to be installed 
 
 ## Installation
 
+Make sure a submodules are cloned using by running
+```sh
+git submodule update --init --recursive
+```
+
 Install stow. e.g. on arch:
 ```sh
 sudo pacman -S stow
