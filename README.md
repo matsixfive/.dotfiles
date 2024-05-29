@@ -4,7 +4,12 @@ The repo contains most of my linux config files and is intended to be installed 
 
 ## Installation
 
-Make sure a submodules are cloned using by running
+Clone this repo with
+```sh
+git clone --recursive https://github.com/matsixfive/.dotfile.git
+```
+
+Make sure a submodules are cloned if `--recursive` was not used by running
 ```sh
 git submodule update --init --recursive
 ```
