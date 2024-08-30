@@ -6,7 +6,7 @@ The repo contains most of my linux config files and is intended to be installed 
 
 Clone this repo with
 ```sh
-git clone --recursive https://github.com/matsixfive/.dotfile.git
+git clone --recursive https://github.com/matsixfive/.dotfiles.git
 ```
 
 Make sure a submodules are cloned if `--recursive` was not used by running
