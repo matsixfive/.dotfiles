@@ -1,2 +1,26 @@
+[package]
+symbol = '📦'
+
+[git_status]
+windows_starship = '/mnt/c/Users/matsixfive/.cargo/bin/starship.exe'
+
+[directory]
+read_only = ' '
+read_only_style = 'bold #f9c23c'
+
+[zig]
+symbol = '⚡️'
+version_format = 'v${major}.${minor}.${patch}'
+
+[bun]
+symbol = '🧄'
+style = 'bold yellow'
+
+[golang]
+symbol = ' '
+
+[rust]
+symbol = '🦀'
+
 [container]
 disabled = true
