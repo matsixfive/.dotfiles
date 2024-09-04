@@ -1,6 +1,6 @@
-alias lock="dm-tool lock"
-
-alias ls='eza --icons=auto --color-scale'
-alias la='ls -a'
-
-# dir=$(fd . ~/.config -t d --maxdepth 1 | fzf); nvim $dir -c "cd $dir"
+alias ls="eza --icons"
+alias la="eza --icons -a"
+alias ll="eza --icons -l"
+alias lal="eza --icons -al"
+alias lla="eza --icons -la"
+alias lp="eza -T -L 4 --icons --git -l --no-time --no-user --no-filesize --no-permissions --git-ignore"
