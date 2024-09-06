@@ -4,3 +4,38 @@ alias ll="eza --icons -l"
 alias lal="eza --icons -al"
 alias lla="eza --icons -la"
 alias lp="eza -T -L 4 --icons --git -al --no-time --no-user --no-filesize --no-permissions --git-ignore"
+
+f() {
+	directories=(
+		"$HOME/dev"
+		"$HOME/uni"
+		"$HOME/work"
+	)
+
+	repos=()
+
+	# Git repos
+	for dir in "${directories[@]}"; do
+			while IFS= read -r gitdir; do
+				dir_name="$(dirname "$gitdir")"
+        mod_date=$(stat -c "%Y" "$dir")
+				repos+=("$mod_date $dir_name")
+			done < <(fd -H --type d ".git" "$dir" 2>/dev/null)
+	done
+
+	# Other
+	for dir in "${directories[@]}"; do
+			while IFS= read -r dir_name; do
+        mod_date=$(stat -c "%Y" "$dir")
+				repos+=("$mod_date $dir_name")
+			done < <(fd . --max-depth 1 "$dir" 2>/dev/null)
+	done
+
+	repos_n=$(printf "%s\n" "${repos[@]%/}" | awk '!seen[$0]++' | sort -n | cut -d " " -f 2 | sed "s|^$HOME|~|")
+
+	selected_repo=$(printf "%s\n" "$repos_n" | fzf --reverse --preview="eza --icons -a1 --color=always --group-directories-first {}" --preview-window="right,33%" | sed "s|^~|$HOME|")
+
+	if [ -n "$selected_repo" ]; then
+			cd "$selected_repo"
+	fi
+}
