@@ -1,9 +1,11 @@
-alias ls="eza --icons"
-alias la="eza --icons -a"
-alias ll="eza --icons -l"
-alias lal="eza --icons -al"
-alias lla="eza --icons -la"
-alias lp="eza -T -L 4 --icons --git -al --no-time --no-user --no-filesize --no-permissions --git-ignore"
+alias ls="eza --group-directories-first --icons"
+alias la="eza --group-directories-first --icons -a"
+alias ll="eza --group-directories-first --icons -l"
+alias lal="eza --group-directories-first --icons -al"
+alias lla="eza --group-directories-first --icons -la"
+alias lp="eza --group-directories-first -T -L 4 --icons --git -al --no-time --no-user --no-filesize --no-permissions --git-ignore"
+
+alias lg="lazygit"
 
 f() {
 	directories=(
@@ -33,7 +35,7 @@ f() {
 
 	repos_n=$(printf "%s\n" "${repos[@]%/}" | awk '!seen[$0]++' | sort -n | cut -d " " -f 2 | sed "s|^$HOME|~|")
 
-	selected_repo=$(printf "%s\n" "$repos_n" | fzf --reverse --preview="eza --icons -a1 --color=always --group-directories-first {}" --preview-window="right,33%" | sed "s|^~|$HOME|")
+	selected_repo=$(printf "%s\n" "$repos_n" | fzf --reverse --preview="eza --icons -a1 --color=always --group-directories-first '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" | sed "s|^~|$HOME|")
 
 	if [ -n "$selected_repo" ]; then
 			cd "$selected_repo"
