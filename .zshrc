@@ -25,3 +25,10 @@ export PATH="$HOME/.local/bin:$PATH"
 export LC_ALL=en_GB.utf8
 
 eval "$(starship init zsh)"
+
+# bun completions
+[ -s "/home/matsixfive/.bun/_bun" ] && source "/home/matsixfive/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
