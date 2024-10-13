@@ -7,20 +7,30 @@ alias lp="eza --group-directories-first -T -L 4 --icons --git -al --no-time --no
 
 alias lg="lazygit"
 
+alias open="explorer.exe"
+
+git() {
+    if [[ $# -eq 0 ]]; then
+        command git status
+    else
+        command git "$@"
+    fi
+}
+
 f() {
-	directories=(
+	local directories=(
 		"$HOME/dev"
 		"$HOME/uni"
 		"$HOME/work"
 	)
 
-	repos=()
+	local repos=()
 
 	# Git repos
 	for dir in "${directories[@]}"; do
 			while IFS= read -r gitdir; do
-				dir_name="$(dirname "$gitdir")"
-        mod_date=$(stat -c "%Y" "$dir")
+				local dir_name="$(dirname "$gitdir")"
+        local mod_date=$(stat -c "%Y" "$dir")
 				repos+=("$mod_date $dir_name")
 			done < <(fd -H --type d ".git" "$dir" 2>/dev/null)
 	done
@@ -28,16 +38,71 @@ f() {
 	# Other
 	for dir in "${directories[@]}"; do
 			while IFS= read -r dir_name; do
-        mod_date=$(stat -c "%Y" "$dir")
+        local mod_date=$(stat -c "%Y" "$dir")
 				repos+=("$mod_date $dir_name")
 			done < <(fd . --max-depth 1 "$dir" 2>/dev/null)
 	done
 
-	repos_n=$(printf "%s\n" "${repos[@]%/}" | awk '!seen[$0]++' | sort -n | cut -d " " -f 2 | sed "s|^$HOME|~|")
+	local repos_n=$(printf "%s\n" "${repos[@]%/}" | awk '!seen[$0]++' | sort -n | cut -d " " -f 2 | sed "s|^$HOME|~|")
 
-	selected_repo=$(printf "%s\n" "$repos_n" | fzf --reverse --preview="eza --icons -a1 --color=always --group-directories-first '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" | sed "s|^~|$HOME|")
+	local selected_repo=$(printf "%s\n" "$repos_n" | fzf --reverse --preview="eza --icons -a1 --color=always --group-directories-first '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" | sed "s|^~|$HOME|")
 
 	if [ -n "$selected_repo" ]; then
 			cd "$selected_repo"
+	fi
+}
+
+preview() {
+	local path="$1"
+
+	if [[ ! -e "$path" ]]; then
+		echo "Path does not exist"
+		return 1
+	elif [[ -d "$path" ]]; then
+		eza --icons -a1 --color=always --group-directories-first "$path"
+	elif [[ -f "$path" ]]; then
+		bat --color always --decorations never "$path"
+	else
+		echo "" 
+		return 1
+	fi
+}
+
+config() {
+	local directories=(
+		"$HOME/.dotfiles"
+	)
+
+	local files=()
+
+	for dir in "${directories[@]}"; do
+			while IFS= read -r dir_name; do
+        local mod_date=$(stat -c "%Y" "$dir")
+				files+=("$mod_date $dir_name")
+			done < <(fd . -t f --max-depth 1 --hidden "$dir" 2>/dev/null)
+	done
+
+	local directories_two=(
+		"$HOME/.dotfiles/.config"
+	)
+
+	for dir in "${directories_two[@]}"; do
+			while IFS= read -r dir_name; do
+        local mod_date=$(stat -c "%Y" "$dir")
+				files+=("$mod_date $dir_name")
+			done < <(fd . --max-depth 1 "$dir" 2>/dev/null)
+	done
+
+	local files_n=$(printf "%s\n" "${files[@]%/}" | awk '!seen[$0]++' | sort -n | cut -d " " -f 2 | sed "s|^$HOME|~|")
+
+	local selected_file=$(printf "%s\n" "$files_n" | fzf --reverse --preview="bat --color always --decorations never '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" | sed "s|^~|$HOME|")
+
+	if [ -n "$selected_file" ]; then
+		if [[ -d "$selected_file" ]]; then
+			cd  "$selected_file"
+			nvim .
+		elif [[ -f "$selected_file" ]]; then
+			nvim  "$selected_file"
+		fi
 	fi
 }
