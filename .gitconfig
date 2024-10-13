@@ -1,11 +1,18 @@
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
 [user]
-    name = matsixfive
+	email = maffers2006@gmail.com
+	name = matsixfive
+[pull]
+	rebase = true
+[init]
+	defaultBranch = main
 [diff]
-    tool = nvimdiff
-    guitool = nvimdiff
+	tool = nvimdiff
+	guitool = nvimdiff
 [merge]
-    tool = nvimdiff
-    conflictstyle = diff3
-[core]
-    editor = nvim
-    pager = bat
+	tool = nvimdiff
