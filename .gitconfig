@@ -1,0 +1,11 @@
+[user]
+    name = matsixfive
+[diff]
+    tool = nvimdiff
+    guitool = nvimdiff
+[merge]
+    tool = nvimdiff
+    conflictstyle = diff3
+[core]
+    editor = nvim
+    pager = bat
