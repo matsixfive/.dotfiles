@@ -14,21 +14,13 @@ unsetopt autocd
 bindkey -v
 # End of lines configured by zsh-newuser-install
 
-alias ls='ls --color=auto'
+# bun completions
+[ -s "/home/matsixfive/.bun/_bun" ] && source "/home/matsixfive/.bun/_bun"
 
 . "$HOME/.zshenv"
 . "$HOME/.zshalias"
-
-export PATH="$HOME/.local/bin:$PATH"
 
 # weird perl errors otherwise ???
 export LC_ALL=en_GB.utf8
 
 eval "$(starship init zsh)"
-
-# bun completions
-[ -s "/home/matsixfive/.bun/_bun" ] && source "/home/matsixfive/.bun/_bun"
-
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"

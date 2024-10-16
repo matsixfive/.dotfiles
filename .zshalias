@@ -7,6 +7,8 @@ alias lp="eza --group-directories-first -T -L 4 --icons --git -al --no-time --no
 
 alias lg="lazygit"
 
+alias py="python3"
+
 alias open="explorer.exe"
 
 git() {
