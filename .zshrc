@@ -23,4 +23,5 @@ bindkey -v
 # weird perl errors otherwise ???
 export LC_ALL=en_GB.utf8
 
+eval "$(mcfly init zsh)"
 eval "$(starship init zsh)"

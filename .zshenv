@@ -6,3 +6,7 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 
 # rust
 export PATH="$HOME/.cargo/bin:$PATH"
+
+# mcfly (reverse search)
+export MCFLY_KEY_SCHEME=vim
+export MCFLY_FUZZY=2
