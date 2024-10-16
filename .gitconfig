@@ -16,3 +16,5 @@
 	guitool = nvimdiff
 [merge]
 	tool = nvimdiff
+[difftool]
+	prompt = false
