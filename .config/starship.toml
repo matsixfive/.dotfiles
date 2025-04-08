@@ -1,26 +1,37 @@
 [package]
-symbol = '📦'
+# symbol = ' '
+symbol = '󰏗'
 
 [git_status]
-windows_starship = '/mnt/c/Users/matsixfive/.cargo/bin/starship.exe'
+windows_starship = '/mnt/c/Users/maffe/.cargo/bin/starship.exe'
 
 [directory]
 read_only = ' '
 read_only_style = 'bold #f9c23c'
 
 [zig]
-symbol = '⚡️'
+symbol = '⚡️ '
 version_format = 'v${major}.${minor}.${patch}'
 
 [bun]
-symbol = '🧄'
+symbol = '🧄 '
 style = 'bold yellow'
 
 [golang]
-symbol = ' '
+symbol = ' '
 
 [rust]
-symbol = '🦀'
+symbol = ' '
+
+[java]
+symbol = ' '
+style = 'bold #f89917'
+
+[gradle]
+symbol = ' '
+
+[ruby]
+detect_variables = []
 
 [container]
 disabled = true
