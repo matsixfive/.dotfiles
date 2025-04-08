@@ -18,3 +18,8 @@
 	tool = nvimdiff
 [difftool]
 	prompt = false
+[core]
+	editor = nvim
+
+[includeIf "gitdir:~/uni/"]
+	path = ~/uni/.gitconfig_uni
