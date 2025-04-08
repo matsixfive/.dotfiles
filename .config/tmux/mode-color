@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+function statusbar_color() {
+	local color="$1"
+	if [ -n "$color" ]; then
+		tmux set-option -g window-status-current-style "fg=color0 bg=$color bold"
+		tmux set-option -g window-status-style "fg=$color"
+	fi
+}
+
+case "$(tmux display-message -p '#{pane_mode}')" in
+	copy-mode)
+		# copying text e.g. `[`
+		statusbar_color 'color5'
+		;;
+	# tree-mode)
+	# 	# choosing a different tmux session e.g. `w`
+	# 	statusbar_color 'color2'
+	# 	;;
+	# buffer-mode)
+	# 	statusbar_color 'color1'
+	# 	;;
+	# client-mode)
+	# 	statusbar_color 'color3'
+	# 	;;
+	*)
+		statusbar_color 'color4'
+		;;
+esac
