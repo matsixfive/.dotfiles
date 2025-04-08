@@ -9,7 +9,23 @@ alias lg="lazygit"
 
 alias py="python3"
 
-alias open="explorer.exe"
+alias :q="echo '🖕'"
+
+alias please="sudo"
+alias reload="source ~/.zshrc"
+
+open() {
+	explorer.exe $(echo "\\\\\\\\wsl.localhost\Arch$(realpath $1 | sed 's#/#\\\\#g')")
+}
+
+pkgsizes() {
+	local filter=".*"
+	if [[ $# -gt 0 ]]; then
+		filter="$1"
+	fi
+
+	pacman -Qi | rg '^(Name|Installed)' | cut -f2 -d':' | tr '\n' '\t' | sed -E 's/(([GMK]i)?B)\t/\1\n/g' | awk ' { t = $1; $1 = $2 $3; $2 = t; $3 = ""; print; } ' | sort  -h | awk ' {t = $1; $1 = $2; $2 = t; print; } ' | rg "$filter" | column -t
+}
 
 git() {
     if [[ $# -eq 0 ]]; then
@@ -47,28 +63,30 @@ f() {
 
 	local repos_n=$(printf "%s\n" "${repos[@]%/}" | awk '!seen[$0]++' | sort -n | cut -d " " -f 2 | sed "s|^$HOME|~|")
 
-	local selected_repo=$(printf "%s\n" "$repos_n" | fzf --reverse --preview="eza --icons -a1 --color=always --group-directories-first '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" | sed "s|^~|$HOME|")
+	# local selected_repo=$(printf "%s\n" "$repos_n" | fzf --reverse --preview="eza --icons -a1 --color=always --group-directories-first '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" | sed "s|^~|$HOME|")
+	local selected_repo=$(printf "%s\n" "$repos_n" | fzf --reverse --preview="$HOME/.local/bin/inspect '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" | sed "s|^~|$HOME|")
 
 	if [ -n "$selected_repo" ]; then
 			cd "$selected_repo"
 	fi
 }
 
-preview() {
-	local path="$1"
-
-	if [[ ! -e "$path" ]]; then
-		echo "Path does not exist"
-		return 1
-	elif [[ -d "$path" ]]; then
-		eza --icons -a1 --color=always --group-directories-first "$path"
-	elif [[ -f "$path" ]]; then
-		bat --color always --decorations never "$path"
-	else
-		echo "" 
-		return 1
-	fi
-}
+# use ~/.local/bin/inspect instead
+# preview() {
+# 	local path="$1"
+# 
+# 	if [[ ! -e "$path" ]]; then
+# 		echo "Path does not exist"
+# 		return 1
+# 	elif [[ -d "$path" ]]; then
+# 		eza --icons -a1 --color=always --group-directories-first "$path"
+# 	elif [[ -f "$path" ]]; then
+# 		bat --color always --decorations never "$path"
+# 	else
+# 		echo "" 
+# 		return 1
+# 	fi
+# }
 
 config() {
 	local directories=(
@@ -97,7 +115,7 @@ config() {
 
 	local files_n=$(printf "%s\n" "${files[@]%/}" | awk '!seen[$0]++' | sort -n | cut -d " " -f 2 | sed "s|^$HOME|~|")
 
-	local selected_file=$(printf "%s\n" "$files_n" | fzf --reverse --preview="bat --color always --decorations never '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" | sed "s|^~|$HOME|")
+	local selected_file=$(printf "%s\n" "$files_n" | fzf --reverse --preview="$HOME/.local/bin/inspect '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" | sed "s|^~|$HOME|")
 
 	if [ -n "$selected_file" ]; then
 		if [[ -d "$selected_file" ]]; then
