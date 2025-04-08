@@ -41,6 +41,30 @@ def gen_cmd(commands: list[list[str]]) -> str:
 
 
 if __name__ == '__main__':
+    # if --help is passed, show help
+    if '--help' in os.sys.argv:
+        print('Usage:\ttmx [--help]')
+        print('\t\n\ttmx is a script to run tmux with a pre-set layout')
+
+        print('\nConfig:')
+
+        print('\tIf no config file is found, tmux will be run without any ' +
+              'command')
+        print('\tConfig file is expected to be at ' +
+              '$XDG_CONFIG_HOME/tmx/config.toml')
+
+        print('\n\tExample config:\n')
+
+        print('\t[[presets]]')
+        print('\t   path = "~/projects/myproject"')
+        print('\t   windows = [["nvim .", "npm run dev"], ["git status"]]')
+
+        print('\n\tNow when you are in the myproject directory, running tmx ' +
+              'will create a new tmux session with two windows:')
+        print('\t1. a split with nvim and npm running')
+        print('\t2. a single pane with git status')
+        exit(0)
+
     config = get_config()
     if not config:
         exit(1)
