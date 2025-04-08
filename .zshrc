@@ -13,9 +13,7 @@ SAVEHIST=1000
 unsetopt autocd
 bindkey -v
 # End of lines configured by zsh-newuser-install
-
-# bun completions
-[ -s "/home/matsixfive/.bun/_bun" ] && source "/home/matsixfive/.bun/_bun"
+setopt hist_ignore_dups hist_ignore_space
 
 . "$HOME/.zshenv"
 . "$HOME/.zshalias"
