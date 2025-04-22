@@ -6,20 +6,18 @@ zstyle :compinstall filename '/home/matsixfive/.zshrc'
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
-# Lines configured by zsh-newuser-install
-HISTFILE=~/.histfile
-HISTSIZE=1000
+
+# History
+HISTFILE=~/.zsh_history
+HISTSIZE=10000
 SAVEHIST=1000
+setopt share_history hist_ignore_dups hist_ignore_space
+
+# do not cd automatically
+# e.g. `dev` does not run `cd ./dev`
 unsetopt autocd
-bindkey -v
-# End of lines configured by zsh-newuser-install
-setopt hist_ignore_dups hist_ignore_space
 
-. "$HOME/.zshenv"
-. "$HOME/.zshalias"
-
-# weird perl errors otherwise ???
-export LC_ALL=en_GB.utf8
-
-eval "$(mcfly init zsh)"
-eval "$(starship init zsh)"
+. "$HOME/.config/zsh/env"
+. "$HOME/.config/zsh/aliases"
+. "$HOME/.config/zsh/bindings"
+. "$HOME/.config/zsh/modules"

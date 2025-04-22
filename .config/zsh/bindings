@@ -1,0 +1,11 @@
+#!/usr/bin/env zsh
+
+# This file contains all of my custom keybindings in zsh
+
+# vim keybindings
+bindkey -v
+
+# <C-e> edits current line
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^e' edit-command-line

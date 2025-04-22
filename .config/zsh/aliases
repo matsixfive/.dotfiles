@@ -1,5 +1,8 @@
 #!/usr/bin/env zsh
 
+# This file contains all of my aliases and function which
+# make my life easier
+
 alias ls="eza --group-directories-first --icons"
 alias la="eza --group-directories-first --icons -a"
 alias ll="eza --group-directories-first --icons -l"
@@ -16,8 +19,14 @@ alias :q="echo '🖕'"
 alias please="sudo"
 alias reload="source ~/.zshrc"
 
+# opens the supplied directory in windows explorer
 open() {
-	explorer.exe $(echo "\\\\\\\\wsl.localhost\Arch$(realpath $1 | sed 's#/#\\\\#g')")
+	explorer.exe $(
+		echo "\\\\\\\\wsl.localhost\Arch$(
+			realpath $1 |
+				sed 's#/#\\\\#g'
+			)"
+		)
 }
 
 pkgsizes() {
@@ -26,9 +35,18 @@ pkgsizes() {
 		filter="$1"
 	fi
 
-	pacman -Qi | rg '^(Name|Installed)' | cut -f2 -d':' | tr '\n' '\t' | sed -E 's/(([GMK]i)?B)\t/\1\n/g' | awk ' { t = $1; $1 = $2 $3; $2 = t; $3 = ""; print; } ' | sort  -h | awk ' {t = $1; $1 = $2; $2 = t; print; } ' | rg "$filter" | column -t
+	pacman -Qi |
+		rg '^(Name|Installed)' |
+		cut -f2 -d':' | tr '\n' '\t' |
+		sed -E 's/(([GMK]i)?B)\t/\1\n/g' |
+		awk ' { t = $1; $1 = $2 $3; $2 = t; $3 = ""; print; } ' |
+		sort  -h |
+		awk ' {t = $1; $1 = $2; $2 = t; print; } ' |
+		rg "$filter" |
+		column -t
 }
 
+# just running `git` will run `git status`
 git() {
     if [[ $# -eq 0 ]]; then
         command git status
@@ -46,7 +64,7 @@ f() {
 
 	local repos=()
 
-	# Git repos
+	# git repos
 	for dir in "${directories[@]}"; do
 			while IFS= read -r gitdir; do
 				local dir_name="$(dirname "$gitdir")"
@@ -55,7 +73,7 @@ f() {
 			done < <(fd -H --type d ".git" "$dir" 2>/dev/null)
 	done
 
-	# Other
+	# other
 	for dir in "${directories[@]}"; do
 			while IFS= read -r dir_name; do
         local mod_date=$(stat -c "%Y" "$dir")
@@ -63,32 +81,24 @@ f() {
 			done < <(fd . --max-depth 1 "$dir" 2>/dev/null)
 	done
 
-	local repos_n=$(printf "%s\n" "${repos[@]%/}" | awk '!seen[$0]++' | sort -n | cut -d " " -f 2 | sed "s|^$HOME|~|")
+	local repos_n=$(
+		printf "%s\n" "${repos[@]%/}" |
+			awk '!seen[$0]++' |
+			sort -n |
+			cut -d " " -f 2 |
+			sed "s|^$HOME|~|"
+		)
 
-	# local selected_repo=$(printf "%s\n" "$repos_n" | fzf --reverse --preview="eza --icons -a1 --color=always --group-directories-first '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" | sed "s|^~|$HOME|")
-	local selected_repo=$(printf "%s\n" "$repos_n" | fzf --reverse --preview="$HOME/.local/bin/inspect '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" | sed "s|^~|$HOME|")
+	local selected_repo=$(
+		printf "%s\n" "$repos_n" |
+			fzf --reverse --preview="$HOME/.local/bin/inspect '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" |
+			sed "s|^~|$HOME|"
+		)
 
 	if [ -n "$selected_repo" ]; then
 			cd "$selected_repo"
 	fi
 }
-
-# use ~/.local/bin/inspect instead
-# preview() {
-# 	local path="$1"
-# 
-# 	if [[ ! -e "$path" ]]; then
-# 		echo "Path does not exist"
-# 		return 1
-# 	elif [[ -d "$path" ]]; then
-# 		eza --icons -a1 --color=always --group-directories-first "$path"
-# 	elif [[ -f "$path" ]]; then
-# 		bat --color always --decorations never "$path"
-# 	else
-# 		echo "" 
-# 		return 1
-# 	fi
-# }
 
 config() {
 	local directories=(
@@ -115,9 +125,19 @@ config() {
 			done < <(fd . --max-depth 1 "$dir" 2>/dev/null)
 	done
 
-	local files_n=$(printf "%s\n" "${files[@]%/}" | awk '!seen[$0]++' | sort -n | cut -d " " -f 2 | sed "s|^$HOME|~|")
+	local files_n=$(
+		printf "%s\n" "${files[@]%/}" |
+			awk '!seen[$0]++' |
+			sort -n |
+			cut -d " " -f 2 |
+			sed "s|^$HOME|~|"
+		)
 
-	local selected_file=$(printf "%s\n" "$files_n" | fzf --reverse --preview="$HOME/.local/bin/inspect '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" | sed "s|^~|$HOME|")
+	local selected_file=$(
+		printf "%s\n" "$files_n" |
+			fzf --reverse --preview="$HOME/.local/bin/inspect '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" |
+			sed "s|^~|$HOME|"
+		)
 
 	if [ -n "$selected_file" ]; then
 		if [[ -d "$selected_file" ]]; then

@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+
+# This file contains initialisation code for terminal
+# additions such as starship.
+
+eval "$(mcfly init zsh)"
+eval "$(starship init zsh)"
