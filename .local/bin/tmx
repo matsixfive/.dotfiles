@@ -19,7 +19,11 @@ def get_config() -> dict:
 def gen_cmd(commands: list[list[str]]) -> str:
     commands = []
 
-    for (i, panes) in enumerate(windows):
+    for (i, pane_or_panes) in enumerate(windows):
+        if type(pane_or_panes) is str:
+            panes = [pane_or_panes]
+        elif type(pane_or_panes) is list:
+            panes = pane_or_panes
         for (j, command) in enumerate(panes):
             # only use quotes if command is not empty
             if command:
