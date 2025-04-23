@@ -55,6 +55,14 @@ git() {
     fi
 }
 
+paru() {
+    if [[ $# -eq 0 ]]; then
+        command paru
+    else
+        command paru --bottomup "$@"
+    fi
+}
+
 f() {
 	local directories=(
 		"$HOME/dev"
