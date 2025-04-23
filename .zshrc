@@ -13,6 +13,10 @@ HISTSIZE=10000
 SAVEHIST=1000
 setopt share_history hist_ignore_dups hist_ignore_space
 
+# set language
+export LANG=en_GB.UTF-8
+export LC_ALL=en_GB.UTF-8
+
 # do not cd automatically
 # e.g. `dev` does not run `cd ./dev`
 unsetopt autocd
