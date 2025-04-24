@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+
+# This will make zsh interactive and run the command passed to it
+# Run `:set shell=$HOME/.local/bin/nvim_zsh_wrapper` in
+# neovim to use the interactive shell which allows you to
+# use things such as aliases in commands such as `:!open %`
+
+zsh -i -c "$@"
