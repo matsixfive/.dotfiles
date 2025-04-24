@@ -14,11 +14,12 @@ export PATH="$HOME/.cargo/bin:$PATH"
 
 # mcfly (reverse search)
 export MCFLY_KEY_SCHEME=vim
+export MCFLY_RESULTS_SORT=LAST_RUN
 export MCFLY_FUZZY=2
 
 # rvm
 export PATH="$HOME/.rvm/bin:$PATH"
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "/usr/share/rvm/src/rvm/scripts/rvm"
+[[ -s "/usr/share/rvm/src/rvm/scripts/rvm" ]] && source "/usr/share/rvm/src/rvm/scripts/rvm"
 
 
 # bun completions
