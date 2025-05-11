@@ -13,21 +13,14 @@ alias lp="eza --group-directories-first -T -L 4 --icons --git -al --no-time --no
 alias lg="lazygit"
 
 alias py="python3"
+alias venv="source ./venv/bin/activate"
 
 alias :q="echo '🖕'"
 
 alias please="sudo"
 alias reload="source ~/.zshrc"
 
-# opens the supplied directory in windows explorer
-open() {
-	explorer.exe $(
-		echo "\\\\\\\\wsl.localhost\Arch$(
-			realpath $1 |
-				sed 's#/#\\\\#g'
-			)"
-		)
-}
+alias open="wsl-open"
 
 pkgsizes() {
 	local filter=".*"
