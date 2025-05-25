@@ -17,43 +17,40 @@ alias venv="source ./venv/bin/activate"
 
 alias :q="echo '🖕'"
 
+alias gh-new="gh repo create --private --remote=origin --source=. --push"
+alias gh-open="gh repo view --web"
+
 alias please="sudo"
 alias reload="source ~/.zshrc"
 
 alias open="wsl-open"
+alias shutdown="wsl.exe --terminate Arch"
 
-pkgsizes() {
-	local filter=".*"
-	if [[ $# -gt 0 ]]; then
-		filter="$1"
-	fi
+fix-x() {
+	sudo rm -rf /tmp/.X11-unix
+	sudo ln -s /mnt/wslg/.X11-unix /tmp/.X11-unix
+}
 
-	pacman -Qi |
-		rg '^(Name|Installed)' |
-		cut -f2 -d':' | tr '\n' '\t' |
-		sed -E 's/(([GMK]i)?B)\t/\1\n/g' |
-		awk ' { t = $1; $1 = $2 $3; $2 = t; $3 = ""; print; } ' |
-		sort  -h |
-		awk ' {t = $1; $1 = $2; $2 = t; print; } ' |
-		rg "$filter" |
-		column -t
+winpath() {
+	# usage: winpath %APPDATA%
+	(cd /mnt/c && cmd.exe /c echo "$@") | tr -d '\r'
 }
 
 # just running `git` will run `git status`
 git() {
-    if [[ $# -eq 0 ]]; then
-        command git status
-    else
-        command git "$@"
-    fi
+	if [[ $# -eq 0 ]]; then
+		command git status
+	else
+		command git "$@"
+	fi
 }
 
 paru() {
-    if [[ $# -eq 0 ]]; then
-        command paru
-    else
-        command paru --bottomup "$@"
-    fi
+	if [[ $# -eq 0 ]]; then
+		command paru
+	else
+		command paru --bottomup "$@"
+	fi
 }
 
 f() {
@@ -67,26 +64,28 @@ f() {
 
 	# git repos
 	for dir in "${directories[@]}"; do
-			while IFS= read -r gitdir; do
-				local dir_name="$(dirname "$gitdir")"
-        local mod_date=$(stat -c "%Y" "$dir")
-				repos+=("$mod_date $dir_name")
-			done < <(fd -H --type d ".git" "$dir" 2>/dev/null)
+		while IFS= read -r gitdir; do
+			local dir_name="$(dirname "$gitdir")"
+			repos+=("$dir_name")
+		done < <(fd -H --type d ".git" "$dir" 2>/dev/null)
 	done
 
 	# other
 	for dir in "${directories[@]}"; do
-			while IFS= read -r dir_name; do
-        local mod_date=$(stat -c "%Y" "$dir")
-				repos+=("$mod_date $dir_name")
-			done < <(fd . --max-depth 1 "$dir" 2>/dev/null)
+		while IFS= read -r dir_name; do
+			repos+=("$dir_name")
+		done < <(fd . --max-depth 1 "$dir" 2>/dev/null)
 	done
 
 	local repos_n=$(
-		printf "%s\n" "${repos[@]%/}" |
-			awk '!seen[$0]++' |
-			sort -n |
-			cut -d " " -f 2 |
+		printf "%s\n" "${repos[@]}" |
+			# get the last modified date
+			xargs -I{} stat -c '%Z %n' {} |
+			# sort and remove duplicates
+			sort -nru  |
+			# remove the first column
+			cut -d' ' -f2- |
+			# replace home with ~
 			sed "s|^$HOME|~|"
 		)
 
@@ -102,17 +101,22 @@ f() {
 }
 
 config() {
+	local winappdata=$(wslpath -u "$(winpath %APPDATA%)")
+	local winhome=$(wslpath -u "$(winpath %USERPROFILE%)")
+
 	local directories=(
 		"$HOME/.dotfiles"
 	)
 
-	local files=()
+	local files=(
+		"$winhome/Documents/ahk"
+		"$winappdata/alacritty/alacritty.toml"
+	)
 
 	for dir in "${directories[@]}"; do
-			while IFS= read -r dir_name; do
-        local mod_date=$(stat -c "%Y" "$dir")
-				files+=("$mod_date $dir_name")
-			done < <(fd . -t f --max-depth 1 --hidden "$dir" 2>/dev/null)
+		while IFS= read -r dir_name; do
+			files+=("$dir_name")
+		done < <(fd . -t f --max-depth 1 --hidden "$dir" 2>/dev/null)
 	done
 
 	local directories_two=(
@@ -120,19 +124,23 @@ config() {
 	)
 
 	for dir in "${directories_two[@]}"; do
-			while IFS= read -r dir_name; do
-        local mod_date=$(stat -c "%Y" "$dir")
-				files+=("$mod_date $dir_name")
-			done < <(fd . --max-depth 1 "$dir" 2>/dev/null)
+		while IFS= read -r dir_name; do
+			files+=("$dir_name")
+		done < <(fd . --max-depth 1 "$dir" 2>/dev/null)
 	done
 
+
 	local files_n=$(
-		printf "%s\n" "${files[@]%/}" |
-			awk '!seen[$0]++' |
-			sort -n |
-			cut -d " " -f 2 |
-			sed "s|^$HOME|~|"
-		)
+	printf "%s\n" "${files[@]}" |
+		# get the last modified date
+		xargs -I{} stat -c '%Z %n' {} |
+		# sort and remove duplicates
+		sort -nru  |
+		# remove the first column
+		cut -d' ' -f2- |
+		# replace home with ~
+		sed "s|^$HOME|~|"
+	)
 
 	local selected_file=$(
 		printf "%s\n" "$files_n" |
