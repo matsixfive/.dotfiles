@@ -16,10 +16,16 @@
 	guitool = nvimdiff
 [merge]
 	tool = nvimdiff
+	conflictStyle = zdiff3
 [difftool]
 	prompt = false
 [core]
 	editor = nvim
+	pager = delta
 
 [includeIf "gitdir:~/uni/"]
 	path = ~/uni/.gitconfig_uni
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
