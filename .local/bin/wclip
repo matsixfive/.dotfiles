@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# This script is used to copy text to the clipboard in WSL.
+# It uses the powershell command `Set-Clipboard` to set the clipboard content.
+
+# check if there is no standard input or arguments
+if [[ "$#" -eq 0 ]] && [[ -t 0 ]]; then
+	# paste
+	powershell.exe -Command "Get-Clipboard"
+	exit $?
+elif [[ "$#" -eq 0 ]]; then
+	# read from stdin and copy to clipboard
+	base64=$(base64 -w 0)
+	powershell.exe -Command "Set-Clipboard -Value ([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$base64')))" > /dev/null 2>&1
+	exit $?
+else
+	# copy
+	base64=$(printf '%s' "$@" | base64 -w 0)
+	powershell.exe -Command "Set-Clipboard -Value ([System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('$base64')))" > /dev/null 2>&1
+	exit $?
+fi
