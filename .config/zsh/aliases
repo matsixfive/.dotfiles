@@ -26,11 +26,6 @@ alias reload="source ~/.zshrc"
 alias open="wsl-open"
 alias shutdown="wsl.exe --terminate Arch"
 
-fix-x() {
-	sudo rm -rf /tmp/.X11-unix
-	sudo ln -s /mnt/wslg/.X11-unix /tmp/.X11-unix
-}
-
 winpath() {
 	# usage: winpath %APPDATA%
 	(cd /mnt/c && cmd.exe /c echo "$@") | tr -d '\r'
@@ -156,4 +151,12 @@ config() {
 			nvim  "$selected_file"
 		fi
 	fi
+}
+
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
 }
