@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+lastupdate=$(awk 'END{sub(/\[/,""); sub(/\]/,""); print $1}' /var/log/pacman.log)
+now=$(date +%s)
+then=$(date -d "$lastupdate" +%s)   # on macOS use: date -j -f "%Y-%m-%d" "$past" +%s
+diff=$((now - then))
+
+days=$((diff / 86400))
+hours=$(( (diff % 86400) / 3600 ))
+minutes=$(( (diff % 3600) / 60 ))
+seconds=$((diff % 60))
+
+parts=()
+(( days > 0 )) && parts+="${days}d"
+(( hours > 0 )) && parts+="${hours}h"
+(( minutes > 0 )) && parts+="${minutes}m"
+(( seconds > 0 )) && parts+="${seconds}s"
+
+# Print first two non-zero parts
+if [ ${#parts[@]} -gt 0 ]; then
+    printf "%s" "${parts[0]}"
+    [ ${#parts[@]} -gt 1 ] && printf ", %s" "${parts[1]}"
+    echo " ago"
+
+else
+    echo "0"
+fi

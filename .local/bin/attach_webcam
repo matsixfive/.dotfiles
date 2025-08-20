@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+cmd.exe /c "usbipd attach --wsl Arch -i 13d3:56cb"
