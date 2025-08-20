@@ -29,3 +29,5 @@
 	diffFilter = delta --color-only
 [delta]
 	navigate = true
+[commit]
+	template = /home/matsixfive/.gitmessage

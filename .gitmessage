@@ -1,0 +1,12 @@
+# feat, fix, docs, style, refactor, perf, test, chore, build, ci
+# No more than 50 chars.      50 chars is here:  ]
+feat(scope): thing
+# Remember blank line between title and body.
+
+# Body: Explain *what* and *why* (not *how*). Include task ID (Jira issue).
+# Wrap at 72 chars.                                    which is here:  ]
+
+
+# At the end: Include Co-authored-by for all contributors.
+# Include at least one empty line before it. Format:
+# Co-authored-by: name <user@users.noreply.github.com>
