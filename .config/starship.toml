@@ -35,3 +35,6 @@ detect_variables = []
 
 [container]
 disabled = true
+
+[netns]
+disabled = true
