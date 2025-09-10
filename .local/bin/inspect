@@ -31,7 +31,7 @@ elif [ -d "$1" ]; then
 	# If eza is not installed, use ls instead
 	which eza > /dev/null
 	if [ $? -eq 0 ]; then
-		eza --color always --icons -a1 "$1"
+		eza --color always --icons --group-directories-first -a1 "$1"
 	else
 		ls -l "$1"
 	fi
