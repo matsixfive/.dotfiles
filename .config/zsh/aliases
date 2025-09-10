@@ -40,14 +40,6 @@ git() {
 	fi
 }
 
-paru() {
-	if [[ $# -eq 0 ]]; then
-		command paru
-	else
-		command paru --bottomup "$@"
-	fi
-}
-
 f() {
 	local directories=(
 		"$HOME/dev"
@@ -86,7 +78,9 @@ f() {
 
 	local selected_repo=$(
 		printf "%s\n" "$repos_n" |
-			fzf --reverse --preview="$HOME/.local/bin/inspect '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" |
+			# use skim to select a file
+			sk --reverse --preview="$HOME/.local/bin/inspect '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right:33%" |
+			# replace ~ with $HOME
 			sed "s|^~|$HOME|"
 		)
 
@@ -139,7 +133,9 @@ config() {
 
 	local selected_file=$(
 		printf "%s\n" "$files_n" |
-			fzf --reverse --preview="$HOME/.local/bin/inspect '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right,33%" |
+			# use skim to select a file
+			sk --reverse --preview="$HOME/.local/bin/inspect '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right:33%" |
+			# replace ~ with $HOME
 			sed "s|^~|$HOME|"
 		)
 
