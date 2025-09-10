@@ -26,11 +26,6 @@ alias reload="source ~/.zshrc"
 alias open="wsl-open"
 alias shutdown="wsl.exe --terminate Arch"
 
-winpath() {
-	# usage: winpath %APPDATA%
-	(cd /mnt/c && cmd.exe /c echo "$@") | tr -d '\r'
-}
-
 # just running `git` will run `git status`
 git() {
 	if [[ $# -eq 0 ]]; then
