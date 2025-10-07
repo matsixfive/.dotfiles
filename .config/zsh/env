@@ -21,6 +21,13 @@ export MCFLY_FUZZY=2
 export PATH="$HOME/.rvm/bin:$PATH"
 [[ -s "/usr/share/rvm/src/rvm/scripts/rvm" ]] && source "/usr/share/rvm/src/rvm/scripts/rvm"
 
+# ghc
+export PATH="$HOME/.ghcup/bin:$PATH"
+
+
+# emsdk
+export EMSDK_QUIET=1
+[ -s "$HOME/.emsdk/emsdk_env.sh" ] && source "$HOME/.emsdk/emsdk_env.sh"
 
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"

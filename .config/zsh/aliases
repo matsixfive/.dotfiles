@@ -26,6 +26,15 @@ alias reload="source ~/.zshrc"
 alias open="wsl-open"
 alias shutdown="wsl.exe --terminate Arch"
 
+search() {
+	if [ -z "$1" ]; then
+		echo "Usage: search <query>"
+		return 1
+	fi
+	encoded=$(printf '%s' "$*" | jq -sRr @uri)
+	xdg-open "https://www.duckduckgo.com/?q=$encoded"
+}
+
 # just running `git` will run `git status`
 git() {
 	if [[ $# -eq 0 ]]; then
@@ -85,8 +94,8 @@ f() {
 }
 
 config() {
-	local winappdata=$(wslpath -u "$(winpath %APPDATA%)")
-	local winhome=$(wslpath -u "$(winpath %USERPROFILE%)")
+	local winappdata=$(wslpath -u "$(cd /mnt/c && cmd.exe /c echo %appdata% | tr -d '\r')")
+	local winhome=$(wslpath -u "$(cd /mnt/c && cmd.exe /c echo %userprofile% | tr -d '\r')")
 
 	local directories=(
 		"$HOME/.dotfiles"
