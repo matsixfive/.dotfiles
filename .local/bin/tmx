@@ -1,7 +1,14 @@
 #!/usr/bin/env python
 
 import os
+import fnmatch
 from pip._vendor import tomli
+
+
+def matches_glob(path: str, pattern: str) -> bool:
+    path = os.path.normpath(path)
+    pattern = os.path.normpath(pattern)
+    return fnmatch.fnmatch(path, pattern)
 
 
 def get_config() -> dict:
@@ -10,13 +17,19 @@ def get_config() -> dict:
     filename = dirname + '/config.toml'
     exists = os.path.exists(filename)
     if not exists:
-        print('Config file not found')
-        return
+        raise Exception('Config file not found at ' + filename)
     config = tomli.load(open(filename, 'rb'))
+
+    if not config or type(config) is not dict:
+        raise Exception('Error loading config file')
+    if 'presets' not in config or type(config['presets']) is not list:
+        # raise Exception('Error in config: no presets')
+        return {}
+
     return config
 
 
-def gen_cmd(commands: list[list[str]]) -> str:
+def gen_cmd(name:str, commands: list[list[str]]) -> str:
     commands = []
 
     for (i, pane_or_panes) in enumerate(windows):
@@ -31,7 +44,10 @@ def gen_cmd(commands: list[list[str]]) -> str:
 
             # new session for first pane
             if i == j == 0:
-                commands.append(f'new {command}')
+                if name:
+                    commands.append(f'new -s "{name}" {command}')
+                else:
+                    commands.append(f'new {command}')
             # new window for first pane of each window
             elif j == 0:
                 commands.append(f'new-window {command}')
@@ -69,33 +85,41 @@ if __name__ == '__main__':
         print('\t2. a single pane with git status')
         exit(0)
 
-    config = get_config()
-    if not config:
-        exit(1)
+    cwd = os.path.normpath(os.getcwd())
 
-    cwd = os.getcwd().rstrip(' /')
+    try:
+        config = get_config()
+    except Exception as e:
+        print(e)
+        print('Running tmux without any command')
+        os.system('tmux')
+        exit(1)
 
     presets = config.get('presets')
-    if not presets:
-        # print('Error in config: no presets')
-        exit(1)
 
     for preset in presets:
-        path = preset.get('path') .replace(
-            '~', os.environ.get('HOME')).rstrip(' /')
-        if not path:
-            print('Error in config: no path')
-            exit(1)
+        path_s = preset.get('path')
+        globs = []
+        if type(path_s) is str:
+            globs = [path_s]
+        elif type(path_s) is list:
+            globs = path_s
 
-        if cwd != path:
+        # TODO: does this work with globs instead of paths?
+        globs = [os.path.expanduser(g) for g in globs]
+
+        for glob in globs:
+            if matches_glob(cwd, glob):
+                break
+        else:
             continue
 
         windows = preset.get('windows')
         if not windows:
-            print('Error in config: no windows specified')
-            exit(1)
+            windows = [['']]
 
-        cmd = gen_cmd(windows)
+        name = preset.get('name')
+        cmd = gen_cmd(name, windows)
 
         os.system(cmd)  # run tmux with generated command
         break
