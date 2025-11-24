@@ -1,27 +1,42 @@
+# github
 [credential "https://github.com"]
 	helper = 
 	helper = !/usr/bin/gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = 
 	helper = !/usr/bin/gh auth git-credential
-[user]
-	email = maffers2006@gmail.com
-	name = matsixfive
-[pull]
-	rebase = true
-[init]
-	defaultBranch = main
-[diff]
-	tool = nvimdiff
-	guitool = nvimdiff
-[merge]
-	tool = nvimdiff
-	conflictStyle = zdiff3
-[difftool]
-	prompt = false
+
 [core]
 	editor = nvim
 	pager = delta
+
+# user
+[user]
+	email = maffers2006@gmail.com
+	name = matsixfive
+
+[init]
+	defaultBranch = main
+[pull]
+	rebase = true
+[merge]
+	tool = nvimdiff
+	conflictStyle = zdiff3
+
+[diff]
+	tool = nvimdiff
+	guitool = nvimdiff
+[difftool]
+	prompt = false
+[alias]
+	# Difftastic aliases, so `git dlog` is `git log` with difftastic and so on.
+	dlog = -c diff.external=difft log --ext-diff
+	dshow = -c diff.external=difft show --ext-diff
+	ddiff = -c diff.external=difft diff
+
+	first = rev-list --max-parents=0 HEAD
+	main = switch main
+
 
 [includeIf "gitdir:~/uni/"]
 	path = ~/uni/.gitconfig_uni
@@ -31,3 +46,5 @@
 	navigate = true
 [commit]
 	template = /home/matsixfive/.gitmessage
+[push]
+	autoSetupRemote = true
