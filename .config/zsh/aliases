@@ -3,14 +3,15 @@
 # This file contains all of my aliases and function which
 # make my life easier
 
-alias ls="eza --group-directories-first --icons"
-alias la="eza --group-directories-first --icons -a"
-alias ll="eza --group-directories-first --icons -l"
-alias lal="eza --group-directories-first --icons -al"
-alias lla="eza --group-directories-first --icons -la"
+alias ls="eza --group-directories-first --icons auto"
+alias la="eza --group-directories-first --icons auto -a"
+alias ll="eza --group-directories-first --icons auto -l"
+alias lal="eza --group-directories-first --icons auto -al"
+alias lla="eza --group-directories-first --icons auto -la"
 alias lp="eza --group-directories-first -T -L 4 --icons --git -al --no-time --no-user --no-filesize --no-permissions --git-ignore"
 
 alias lg="lazygit"
+alias vim="nvim"
 
 alias py="python3"
 alias venv="source ./venv/bin/activate"
@@ -83,7 +84,7 @@ f() {
 	local selected_repo=$(
 		printf "%s\n" "$repos_n" |
 			# use skim to select a file
-			sk --reverse --preview="$HOME/.local/bin/inspect '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right:33%" |
+			sk --reverse --preview="$HOME/.local/bin/inspect '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right:33%" --tmux=center |
 			# replace ~ with $HOME
 			sed "s|^~|$HOME|"
 		)
@@ -138,7 +139,7 @@ config() {
 	local selected_file=$(
 		printf "%s\n" "$files_n" |
 			# use skim to select a file
-			sk --reverse --preview="$HOME/.local/bin/inspect '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right:33%" |
+			sk --reverse --preview="$HOME/.local/bin/inspect '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right:33%" --tmux=center |
 			# replace ~ with $HOME
 			sed "s|^~|$HOME|"
 		)
@@ -146,7 +147,6 @@ config() {
 	if [ -n "$selected_file" ]; then
 		if [[ -d "$selected_file" ]]; then
 			cd  "$selected_file"
-			nvim .
 		elif [[ -f "$selected_file" ]]; then
 			nvim  "$selected_file"
 		fi
