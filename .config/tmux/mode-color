@@ -3,7 +3,7 @@
 function statusbar_color() {
 	local color="$1"
 	if [ -n "$color" ]; then
-		tmux set-option -g window-status-current-style "fg=color0 bg=$color bold"
+		tmux set-option -g window-status-current-style "fg=color16 bg=$color bold"
 		tmux set-option -g window-status-style "fg=$color"
 	fi
 }
