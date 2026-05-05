@@ -27,6 +27,16 @@ alias reload="source ~/.zshrc"
 alias open="wsl-open"
 alias shutdown="wsl.exe --terminate Arch"
 
+cmd() {
+	# if arguments are given
+	local dir="$(pwd)"
+	if [[ $# -gt 0 ]]; then
+		(cd /mnt/c && cmd.exe /c "pushd $(wslpath -w $dir) && $*")
+	else
+		(cd /mnt/c && cmd.exe /k "pushd $(wslpath -w $dir)")
+	fi
+}
+
 search() {
 	if [ -z "$1" ]; then
 		echo "Usage: search <query>"
