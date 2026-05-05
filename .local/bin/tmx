@@ -12,93 +12,102 @@ def matches_glob(path: str, pattern: str) -> bool:
 
 
 def get_config() -> dict:
-    dirname = (os.environ.get('XDG_CONFIG_HOME')
-               or os.environ.get('HOME') + '/.config') + '/tmx'
-    filename = dirname + '/config.toml'
+    dirname = (
+        os.environ.get("XDG_CONFIG_HOME")
+        or (os.environ.get("HOME") or exit(1)) + "/.config"
+    ) + "/tmx"
+    filename = dirname + "/config.toml"
     exists = os.path.exists(filename)
     if not exists:
-        raise Exception('Config file not found at ' + filename)
-    config = tomli.load(open(filename, 'rb'))
+        raise Exception("Config file not found at " + filename)
+    config = tomli.load(open(filename, "rb"))
 
-    if not config or type(config) is not dict:
-        raise Exception('Error loading config file')
-    if 'presets' not in config or type(config['presets']) is not list:
-        # raise Exception('Error in config: no presets')
-        return {}
+    # if not config or type(config) is not dict:
+    #     raise Exception("Error loading config file")
+    # if "presets" not in config or type(config["presets"]) is not list:
+    #     # raise Exception('Error in config: no presets')
+    #     return {}
 
     return config
 
 
-def gen_cmd(name:str, commands: list[list[str]]) -> str:
+def gen_cmd(name: str, windows: list[list[str]]) -> str:
     commands = []
 
-    for (i, pane_or_panes) in enumerate(windows):
+    for i, pane_or_panes in enumerate(windows):
         if type(pane_or_panes) is str:
             panes = [pane_or_panes]
         elif type(pane_or_panes) is list:
             panes = pane_or_panes
-        for (j, command) in enumerate(panes):
+        else:
+            raise Exception("Invalid command format in config")
+
+        for j, command in enumerate(panes):
             # only use quotes if command is not empty
             if command:
-                command = f'\'{command} ; exec $SHELL\''
+                command = f"'{command} ; exec $SHELL'"
 
             # new session for first pane
             if i == j == 0:
                 if name:
                     commands.append(f'new -s "{name}" {command}')
                 else:
-                    commands.append(f'new {command}')
+                    commands.append(f"new {command}")
             # new window for first pane of each window
             elif j == 0:
-                commands.append(f'new-window {command}')
+                commands.append(f"new-window {command}")
             # vertical split for others
             else:
-                commands.append(f'split-window -h {command}')
-    commands.append('select-window -t 1')  # go back to first window
-    args = ' \';\' '.join(commands)  # separate commands with ';'
-    cmd = f'tmux {args}'
+                commands.append(f"split-window -h {command}")
+    commands.append("select-window -t 1")  # go back to first window
+    args = " \\; ".join(commands)  # separate commands with ';'
+    cmd = f"tmux {args}"
     return cmd
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # if --help is passed, show help
-    if '--help' in os.sys.argv:
-        print('Usage:\ttmx [--help]')
-        print('\t\n\ttmx is a script to run tmux with a pre-set layout')
+    if "--help" in os.sys.argv:
+        print("Usage:\ttmx [--help]")
+        print("\t\n\ttmx is a script to run tmux with a pre-set layout")
 
-        print('\nConfig:')
+        print("\nConfig:")
 
-        print('\tIf no config file is found, tmux will be run without any ' +
-              'command')
-        print('\tConfig file is expected to be at ' +
-              '$XDG_CONFIG_HOME/tmx/config.toml')
+        print("\tIf no config file is found, tmux will be run without any " + "command")
+        print(
+            "\tConfig file is expected to be at " + "$XDG_CONFIG_HOME/tmx/config.toml"
+        )
 
-        print('\n\tExample config:\n')
+        print("\n\tExample config:\n")
 
-        print('\t[[presets]]')
+        print("\t[[presets]]")
         print('\t   path = "~/projects/myproject"')
         print('\t   windows = [["nvim .", "npm run dev"], ["git status"]]')
 
-        print('\n\tNow when you are in the myproject directory, running tmx ' +
-              'will create a new tmux session with two windows:')
-        print('\t1. a split with nvim and npm running')
-        print('\t2. a single pane with git status')
+        print(
+            "\n\tNow when you are in the myproject directory, running tmx "
+            + "will create a new tmux session with two windows:"
+        )
+        print("\t1. a split with nvim and npm running")
+        print("\t2. a single pane with git status")
         exit(0)
 
     cwd = os.path.normpath(os.getcwd())
 
     try:
         config = get_config()
+        print(config)
+        exit(0)
     except Exception as e:
         print(e)
-        print('Running tmux without any command')
-        os.system('tmux')
+        print("Running tmux without any command")
+        os.system("tmux")
         exit(1)
 
-    presets = config.get('presets')
+    presets = config.get("presets") or []
 
     for preset in presets:
-        path_s = preset.get('path')
+        path_s = preset.get("path")
         globs = []
         if type(path_s) is str:
             globs = [path_s]
@@ -114,17 +123,19 @@ if __name__ == '__main__':
         else:
             continue
 
-        windows = preset.get('windows')
+        windows = preset.get("windows")
         if not windows:
-            windows = [['']]
+            windows = [[""]]
 
-        name = preset.get('name')
+        name = preset.get("name")
         cmd = gen_cmd(name, windows)
 
         os.system(cmd)  # run tmux with generated command
         break
 
     else:
-        os.system('tmux')  # run tmux without any command
+        os.system("tmux")  # run tmux without any command
 
     exit(0)
+
+    # tmux new -s "team-project-2008" 'nvim . ; exec $SHELL' ';' new-window 'cd spring-boot && ./mvnw spring-boot:run ; exec $SHELL' ';' split-window -h 'cd react && npm run dev ; exec $SHELL' ';' new-window  ';' select-window -t 1
