@@ -1,6 +1,18 @@
+format = '${custom.vpn_connected}${custom.vpn_pending}$all'
+
 [package]
 # symbol = ' '
 symbol = '󰏗'
+
+[custom.vpn_connected]
+symbol = "󰌆 "
+when = "systemctl is-active --quiet shefvpn && ip link show ppp0"
+style = "fg:2" # Green
+
+[custom.vpn_pending]
+symbol = "󰷖 "
+when = "systemctl is-active --quiet shefvpn && ! ip link show ppp0"
+style = "fg:3" # Yellow/Orange
 
 [git_status]
 windows_starship = '/mnt/c/Users/maffe/.cargo/bin/starship.exe'
