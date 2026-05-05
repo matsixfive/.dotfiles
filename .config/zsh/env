@@ -3,6 +3,8 @@
 # This file contains all of the environment variable
 # definitions for the system as well as some other setup
 
+export WAYLAND_DISPLAY=
+
 export PATH="$HOME/.local/bin:$PATH"
 
 # bun
@@ -34,3 +36,27 @@ export EMSDK_QUIET=1
 
 # initialize opam
 [[ ! -r "$HOME/.opam/opam-init/init.zsh" ]] || source "$HOME/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null
+
+# mise (for uni)
+_load_mise_on_gemfile() {
+  # If MISE_INITIALIZED is not set AND a Gemfile exists
+  if [[ -z "$MISE_INITIALIZED" && -f "Gemfile" ]]; then
+    eval "$(mise activate zsh)"
+    export MISE_INITIALIZED=1
+    
+    # Optional: Remove the hook after it runs once to save CPU cycles
+    add-zsh-hook -d chpwd _load_mise_on_gemfile
+  fi
+}
+
+# Add to the zsh hook list
+autoload -U add-zsh-hook
+add-zsh-hook chpwd _load_mise_on_gemfile
+
+# Run once on startup in case you start inside a Ruby project
+_load_mise_on_gemfile
+
+# initialise keychain for ssh keys
+eval "$(keychain --eval --quiet id_ed25519)"
+eval "$(keychain --eval --quiet id_ed25519_shefgitlab)"
+eval "$(ssh-agent -s)" > /dev/null
