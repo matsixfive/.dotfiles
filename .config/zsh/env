@@ -7,6 +7,9 @@ export WAYLAND_DISPLAY=
 
 export PATH="$HOME/.local/bin:$PATH"
 
+export DESKTOP_PC_IP="192.168.1.83"
+export OLLAMA_HOST="http://${DESKTOP_PC_IP}:11434"
+
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
@@ -25,7 +28,6 @@ export PATH="$HOME/.rvm/bin:$PATH"
 
 # ghc
 export PATH="$HOME/.ghcup/bin:$PATH"
-
 
 # emsdk
 export EMSDK_QUIET=1
@@ -55,8 +57,3 @@ add-zsh-hook chpwd _load_mise_on_gemfile
 
 # Run once on startup in case you start inside a Ruby project
 _load_mise_on_gemfile
-
-# initialise keychain for ssh keys
-eval "$(keychain --eval --quiet id_ed25519)"
-eval "$(keychain --eval --quiet id_ed25519_shefgitlab)"
-eval "$(ssh-agent -s)" > /dev/null
