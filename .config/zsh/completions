@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+
+_vpnctl() {
+  local -a commands
+  commands=(
+    'start:Start the VPN'
+    'stop:Stop the VPN'
+    'restart:Restart the VPN'
+    'status:Show VPN status'
+  )
+
+  _describe 'command' commands
+}
+
+compdef _vpnctl vpnctl
