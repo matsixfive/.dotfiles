@@ -25,3 +25,4 @@ unsetopt autocd
 . "$HOME/.config/zsh/aliases"
 . "$HOME/.config/zsh/bindings"
 . "$HOME/.config/zsh/modules"
+. "$HOME/.config/zsh/completions"
