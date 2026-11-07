@@ -27,6 +27,8 @@ alias reload="source ~/.zshrc"
 alias open="wsl-open"
 alias shutdown="wsl.exe --terminate Arch"
 
+alias f='cd $(fd . ~ -td | sed "s#^$HOME#~#" | fzf | sed "s#^~#$HOME#")'
+
 cmd() {
 	# if arguments are given
 	local dir="$(pwd)"
@@ -52,55 +54,6 @@ git() {
 		command git status
 	else
 		command git "$@"
-	fi
-}
-
-f() {
-	local directories=(
-		"$HOME/dev"
-		"$HOME/uni"
-		"$HOME/work"
-	)
-
-	local repos=()
-
-	# git repos
-	for dir in "${directories[@]}"; do
-		while IFS= read -r gitdir; do
-			local dir_name="$(dirname "$gitdir")"
-			repos+=("$dir_name")
-		done < <(fd -H --type d ".git" "$dir" 2>/dev/null)
-	done
-
-	# other
-	for dir in "${directories[@]}"; do
-		while IFS= read -r dir_name; do
-			repos+=("$dir_name")
-		done < <(fd . --max-depth 1 "$dir" 2>/dev/null)
-	done
-
-	local repos_n=$(
-		printf "%s\n" "${repos[@]}" |
-			# get the last modified date
-			xargs -I{} stat -c '%Z %n' {} |
-			# sort and remove duplicates
-			sort -nru  |
-			# remove the first column
-			cut -d' ' -f2- |
-			# replace home with ~
-			sed "s|^$HOME|~|"
-		)
-
-	local selected_repo=$(
-		printf "%s\n" "$repos_n" |
-			# use skim to select a file
-			sk --reverse --preview="$HOME/.local/bin/inspect '$(echo "{}" | sed "s|^~|$HOME|")'" --preview-window="right:33%" --tmux=center |
-			# replace ~ with $HOME
-			sed "s|^~|$HOME|"
-		)
-
-	if [ -n "$selected_repo" ]; then
-			cd "$selected_repo"
 	fi
 }
 
